@@ -111,6 +111,7 @@ const submitPaymentDetails = async () => {
         cardNumber: cardNumber.value,
       }
     );
+    console.log("Payment successful:", response.data);
     showModal.value = false;
     await fetchPaymentRequest();
   } catch (err) {
