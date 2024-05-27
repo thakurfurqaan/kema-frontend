@@ -99,7 +99,7 @@ export default {
     async makePayment() {
       try {
         const response = await apiClient.post(
-          `/v1/payments/requests/${this.paymentRequestId}/process/`
+          `/v1/payments/requests/${this.paymentRequestId}/pay/`
         );
         console.log("Payment successful:", response.data);
         await this.fetchPaymentRequest();
