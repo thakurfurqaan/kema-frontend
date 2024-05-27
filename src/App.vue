@@ -1,14 +1,14 @@
 <template>
-  <CreatePaymentRequestForm/>
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <script>
-import CreatePaymentRequestForm from './components/CreatePaymentRequestForm.vue';
 
 export default {
   name: 'App',
   components: {
-    CreatePaymentRequestForm
   }
 }
 </script>
@@ -17,7 +17,6 @@ export default {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 </style>

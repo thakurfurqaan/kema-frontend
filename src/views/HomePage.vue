@@ -2,6 +2,7 @@
 import Button from "primevue/button";
 import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
+import ProgressSpinner from 'primevue/progressspinner';
 </script>
 
 <template>
@@ -19,18 +20,23 @@ import InputNumber from 'primevue/inputnumber';
         </div>
         <div >
           <label for="amount" class="font-bold block mb-2"> Amount </label>
-          <InputNumber v-model="amount" inputId="amount" :minFractionDigits="0" :maxFractionDigits="2" required/>
+          <InputNumber v-model="amount" inputId="amount" :minFractionDigits="0" :maxFractionDigits="2" required class="w-full"/>
         </div>
-        <div>
-        <Button type="submit">Generate Payment Link</Button>
+        <div class="flex justify-center">
+          <div v-if="isLoading">
+            <ProgressSpinner style="width: 25px; height: 25px"/>
+          </div>
+          <div v-else class="text-center">
+          <Button type="submit">Generate Payment Link</Button>
+          </div>
         </div>
     </form>
-    <div v-if="paymentLink">
+    <div v-if="paymentLink" class="text-center">
       <h3>Payment Link</h3>
-      <a href="paymentLink">{{ paymentLink }}</a>
+      <a :href="paymentLink">{{ paymentLink }}</a>
       <br>
       <h3>QR Code</h3>
-      <img :src="qrCodeUrl" alt="QR Code">
+      <img :src="qrCodeUrl" alt="QR Code" >
     </div>
   </div>
   </div>
@@ -41,6 +47,7 @@ import apiClient from '@/services/api';
 import { getQrCodeUrl } from '@/services/qrcode';
 
 export default {
+  name: "HomePage",
   data() {
     return {
       selectedMerchant: null,
@@ -50,7 +57,7 @@ export default {
       qrCodeUrl: null,
       merchants: [],
       currencies: [],
-      isPaymentLinkCreated: false
+      isLoading: false,
     };
   },
   async created(){
@@ -60,11 +67,12 @@ export default {
   methods: {
     async fetchMerchants() {
       try {
+        
         const response = await apiClient.get('/v1/merchants/');
         this.merchants = response.data;
       } catch (error) {
         console.error('Error fetching merchants:', error);
-      }
+      } 
     },
     async fetchCurrencies() {
       try {
@@ -76,6 +84,7 @@ export default {
     },
     async createPaymentRequest() {
       try {
+        this.isLoading = true;
         const response = await apiClient.post('/v1/payments/requests/', {
           merchant: this.selectedMerchant,
           amount: this.amount,
@@ -85,26 +94,10 @@ export default {
         this.qrCodeUrl = getQrCodeUrl(this.paymentLink);
       } catch (error) {
         console.error('Error creating payment:', error);
+      } finally {
+        this.isLoading = false;
       }
     }
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
