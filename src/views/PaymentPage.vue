@@ -1,11 +1,15 @@
 <script setup>
 import Button from "primevue/button";
+import Message from 'primevue/message';
+import ProgressSpinner from 'primevue/progressspinner';
 </script>
 
 <template>
 <div class="min-h-screen flex items-center justify-center bg-green-500">
    <div class="bg-white p-8 shadow-md w-full max-w-md rounded my-10">
     <h2 class="text-2xl font-bold mb-6 text-center">Payment Request</h2>
+    <div v-if="paymentRequest?.status === 'PAID'" class="text-red-500"><Message severity="success">Your payment was successful!</Message></div>
+    <div v-if="error" class="text-red-500"><Message severity="error">{{ error }}</Message></div>
     <div v-if="paymentRequest" class="space-y-4">
         <div class="bg-gray-100 p-5 rounded">
           <h3 class="text-lg font-bold mb-2">Merchant Details</h3>
@@ -18,16 +22,20 @@ import Button from "primevue/button";
           <p><span class="font-bold">Status:</span> {{ paymentRequest.status }}</p>
           <p><span class="font-bold">Created At:</span> {{ paymentRequest.created_at }}</p>
         </div>
-        <Button type="button" label="Pay Now" class="w-full " @click="makePayment" />
+        <div v-if="paymentRequest?.status === 'PENDING'" class="text-red-500">
+            <div v-if="isLoading" class="text-center">
+        <ProgressSpinner style="width: 40px; height: 40px" strokeWidth="3"/>
       </div>
       <div v-else class="text-center">
-        <p> <ProgressSpinner style="width: 25px; height: 25px"/></p>
+        <Button type="button" label="Pay Now" class="w-full " @click="makePayment" />
+    </div>
+        </div>
       </div>
     <nav class="text-center mt-2">
         <RouterLink to="/">Generate Payment Link</RouterLink>
     </nav>
-  </div>
-  </div>
+</div>
+</div>
 </template>
 
 <script>
@@ -38,8 +46,9 @@ export default {
   data() {
     return {
       paymentRequest: null,
-      paymentId: this.$route.params.id,
+      paymentRequestId: this.$route.params.id,
       isLoading: false,
+      error: null,
     };
   },
   async created(){
@@ -49,22 +58,21 @@ export default {
     async fetchPaymentRequest() {
       try {
         this.isLoading=true;
-        const response = await apiClient.get(`/v1/payments/requests/${this.paymentId}/`);
+        const response = await apiClient.get(`/v1/payments/requests/${this.paymentRequestId}/`);
         this.paymentRequest = response.data;
         console.log(response.data)
       } catch (error) {
-        console.error('Error creating payment:', error);
+        console.error('Error retrieving payment:', error);
+        this.error = 'Invalid payment ID'; 
       } finally {
         this.isLoading=false;
       }
     },
     async makePayment() {
         try {
-            const response = await apiClient.post('/v1/payments/', {
-            payment_request: this.paymentRequest.id
-            });
+            const response = await apiClient.post(`/v1/payments/requests/${this.paymentRequestId}/process/`);
             console.log('Payment successful:', response.data);
-            this.isPaymentLinkCreated = true;
+            await this.fetchPaymentRequest();            
         } catch (error) {
             console.error('Error making payment:', error);
         }
