@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import PaymentDetails from "@/components/PaymentDetails.vue";
-import PaymentForm from "@/components/PaymentForm.vue";
+import PaymentForm from "@/components/PaymentRequestForm.vue";
+import PaymentDetails from "@/components/PaymentRequestLink.vue";
 import apiClient from "@/services/api";
 import { getQrCodeUrl } from "@/services/qrcode";
 import { onMounted, ref } from "vue";
