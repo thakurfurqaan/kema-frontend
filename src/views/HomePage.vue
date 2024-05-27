@@ -19,6 +19,7 @@ import ProgressSpinner from "primevue/progressspinner";
             optionValue="id"
             placeholder="Select a Merchant"
             class="w-full md:w-14rem"
+            :invalid="!selectedMerchant"
           />
         </div>
         <div>
@@ -30,6 +31,7 @@ import ProgressSpinner from "primevue/progressspinner";
             optionValue="id"
             placeholder="Select a Currency"
             class="w-full md:w-14rem"
+            :invalid="!selectedCurrency"
           />
         </div>
         <div>
@@ -41,6 +43,7 @@ import ProgressSpinner from "primevue/progressspinner";
             :maxFractionDigits="2"
             required
             class="w-full"
+            :invalid="!amount"
           />
         </div>
         <div class="flex justify-center">
@@ -48,7 +51,11 @@ import ProgressSpinner from "primevue/progressspinner";
             <ProgressSpinner style="width: 25px; height: 25px" />
           </div>
           <div v-else class="text-center">
-            <Button type="submit">Generate Payment Link</Button>
+            <Button
+              type="submit"
+              :disabled="!(selectedMerchant && selectedCurrency && amount)"
+              >Generate Payment Link</Button
+            >
           </div>
         </div>
       </form>
