@@ -1,35 +1,38 @@
+<script setup>
+import Button from "primevue/button";
+import Dropdown from 'primevue/dropdown';
+import InputNumber from 'primevue/inputnumber';
+</script>
+
 <template>
-<div>
-    <h2>Generate Payment Link</h2>
-    <form @submit.prevent="createPaymentRequest">
-      <div>
-        <label for="merchant">Merchant:</label>
-        <select v-model="selectedMerchant" required>
-          <option v-for="merchant in merchants" :key="merchant.id" :value="merchant.id">
-            {{ merchant.business_name }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <label for="currency">Currency:</label>
-        <select v-model="selectedCurrency" required>
-          <option v-for="currency in currencies" :key="currency.id" :value="currency.id">
-            {{ currency.name }} ({{ currency.code }})
-          </option>
-        </select>
-      </div>
-      <div>
-        <label for="amount">Amount:</label>
-        <input type="number" v-model="amount" required>
-      </div>
-      <button type="submit">Create Payment</button>
+<div class="min-h-screen flex items-center justify-center bg-green-500">
+   <div class="bg-white p-8 shadow-md w-full max-w-md rounded my-10">
+    <h2 class="text-2xl font-bold mb-6 text-center">Generate Payment Link</h2>
+    <form @submit.prevent="createPaymentRequest" class="space-y-4">
+        <div >
+          <label for="merchant" class="font-bold block mb-2">Merchant</label>
+          <Dropdown v-model="selectedMerchant" :options="merchants" optionLabel="business_name" optionValue="id" placeholder="Select a Merchant" class="w-full md:w-14rem" />
+        </div>
+        <div >
+          <label for="currency" class="font-bold block mb-2">Currency</label>
+          <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="code" optionValue="id" placeholder="Select a Currency" class="w-full md:w-14rem" />
+        </div>
+        <div >
+          <label for="amount" class="font-bold block mb-2"> Amount </label>
+          <InputNumber v-model="amount" inputId="amount" :minFractionDigits="0" :maxFractionDigits="2" required/>
+        </div>
+        <div>
+        <Button type="submit">Generate Payment Link</Button>
+        </div>
     </form>
     <div v-if="paymentLink">
       <h3>Payment Link</h3>
       <a href="paymentLink">{{ paymentLink }}</a>
       <br>
+      <h3>QR Code</h3>
       <img :src="qrCodeUrl" alt="QR Code">
     </div>
+  </div>
   </div>
 </template>
 
