@@ -73,7 +73,7 @@ export default {
     return {
       selectedMerchant: null,
       selectedCurrency: null,
-      amount: "",
+      amount: 0,
       paymentLink: null,
       qrCodeUrl: null,
       merchants: [],
