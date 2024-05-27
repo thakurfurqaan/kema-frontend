@@ -2,13 +2,13 @@
   <div class="min-h-screen flex items-center justify-center bg-green-500">
     <div class="bg-white p-8 shadow-md w-full max-w-md rounded my-10">
       <h2 class="text-2xl font-bold mb-6 text-center">Generate Payment Link</h2>
-      <PaymentForm
+      <PaymentRequestForm
         :merchants="merchants"
         :currencies="currencies"
         :isLoading="isLoading"
         @submit="createPaymentRequest"
       />
-      <PaymentDetails
+      <PaymentRequestLink
         v-if="paymentLink"
         :paymentLink="paymentLink"
         :qrCodeUrl="qrCodeUrl"
@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import PaymentForm from "@/components/PaymentRequestForm.vue";
-import PaymentDetails from "@/components/PaymentRequestLink.vue";
+import PaymentRequestForm from "@/components/PaymentRequestForm.vue";
+import PaymentRequestLink from "@/components/PaymentRequestLink.vue";
 import apiClient from "@/services/api";
 import { getQrCodeUrl } from "@/services/qrcode";
 import { onMounted, ref } from "vue";

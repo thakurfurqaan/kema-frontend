@@ -12,6 +12,14 @@
       <span class="font-bold">Created At:</span>
       {{ props.paymentDetails.created_at }}
     </p>
+    <p v-if="props.paymentDetails.customer_email">
+      <span class="font-bold">Customer Email:</span>
+      {{ props.paymentDetails.customer_email }}
+    </p>
+    <p v-if="props.paymentDetails.customer_card_number">
+      <span class="font-bold">Card Number:</span>
+      **** **** **** {{ props.paymentDetails.customer_card_number.slice(-4) }}
+    </p>
   </div>
 </template>
 
